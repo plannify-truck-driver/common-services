@@ -1,0 +1,69 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: plannify_postgres
+    environment:
+      POSTGRES_DB: plannify_db
+      POSTGRES_USER: plannify_user
+      POSTGRES_PASSWORD: plannify_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - plannify_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U plannify_user -d plannify_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:8
+    container_name: plannify_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - plannify_network
+    restart: unless-stopped
+
+  garage:
+    image: docker.io/dxflrs/garage:v2.1.0
+    ports:
+      - 3900:3900
+      - 3901:3901
+      - 3902:3903
+      - 3903:3903
+    volumes:
+      - ./garage.toml:/etc/garage.toml
+      - garage_data:/var/lib/garage
+    networks:
+      - plannify_network
+    restart: unless-stopped
+    tty: true
+
+  garage-ui:
+    image: khairul169/garage-webui:latest
+    container_name: garage-webui
+    restart: unless-stopped
+    ports:
+      - 3909:3909
+    volumes:
+      - ./garage.toml:/etc/garage.toml:ro
+    environment:
+      API_BASE_URL: "http://garage:3903"
+      S3_ENDPOINT_URL: "http://garage:3900"
+      API_ADMIN_KEY: "NFjLm3PUZ5FqsWxjEObEBD2CR8xKpEkErGza0/+8xxg="
+    networks:
+      - plannify_network
+
+volumes:
+  postgres_data:
+    driver: local
+  garage_data:
+    driver: local
+
+networks:
+  plannify_network:
+    driver: bridge
