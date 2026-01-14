@@ -1,2 +1,2 @@
 -- Migration: Create entity type enum
-CREATE TYPE "EntityType" AS ENUM ('DRIVER', 'EMPLOYEE');
+CREATE TYPE IF NOT EXISTS "EntityType" AS ENUM ('DRIVER', 'EMPLOYEE');
