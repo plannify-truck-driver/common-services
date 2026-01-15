@@ -57,3 +57,16 @@ jobs:
           ignore-unfixed: true
           vuln-type: "os,library"
           severity: "CRITICAL,HIGH"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          body: |
+            ## Docker Image
+            `${{ env.REGISTRY }}/${{ github.repository }}:${{ github.ref_name }}`
+
+            ## Installation
+            ```bash
+            docker pull ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.ref_name }}
+            ```
