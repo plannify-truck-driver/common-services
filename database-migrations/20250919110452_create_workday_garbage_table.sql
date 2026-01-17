@@ -10,4 +10,4 @@ CREATE TABLE IF NOT EXISTS public."workday_garbage" (
     FOREIGN KEY (workday_date, fk_driver_id)
     REFERENCES workdays (date, fk_driver_id)
     ON DELETE CASCADE
-);-- Add migration script here
+);
