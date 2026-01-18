@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS public."employee_action_histories" (
     fk_employee_id UUID NOT NULL,
     fk_employee_authorization_type_id INTEGER NOT NULL,
     fk_entity_id UUID NOT NULL,
-    fk_entity_type "EntityType" NOT NULL,
+    fk_entity_type "entity_type" NOT NULL,
     description JSONB,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 

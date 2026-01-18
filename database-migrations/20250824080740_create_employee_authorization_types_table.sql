@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS public."employee_authorization_types" (
     pk_employee_authorization_type_id SERIAL PRIMARY KEY,
     fk_employee_authorization_id INTEGER NOT NULL,
-    crud_type "CrudType" DEFAULT 'R',
+    crud_type "crud_type" DEFAULT 'R',
     description VARCHAR(500) NOT NULL,
 
     CONSTRAINT fk_employee_authorization_id

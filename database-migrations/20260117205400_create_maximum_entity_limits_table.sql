@@ -1,7 +1,7 @@
 -- Migration: Create maximum entity limits table
 CREATE TABLE IF NOT EXISTS public."maximum_entity_limits" (
     pk_maximum_entity_limit_id SERIAL PRIMARY KEY,
-    entity_type "EntityType" NOT NULL,
+    entity_type "entity_type" NOT NULL,
     maximum_limit INTEGER NOT NULL,
     fk_created_employee_id UUID NOT NULL,
     start_at TIMESTAMP WITH TIME ZONE NOT NULL,
