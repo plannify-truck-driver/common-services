@@ -29,7 +29,7 @@ sqlx migrate run --source database-migrations --database-url postgresql://planni
 If using the common-services Docker image with migrations, set the `DATABASE_URL` environment variable:
 
 ```bash
-docker run -e DATABASE_URL=postgresql://plannify_user:plannify_password@host.docker.internal:5432/plannify_db cs:latest
+docker run -e DATABASE_URL=postgresql://plannify_user:plannify_password@localhost:5432/plannify_db ghcr.io/plannify-truck-driver/common-services:latest
 ```
 
 ### Garage
