@@ -1,7 +1,7 @@
 FROM alpine:3.23 AS builder
 
 RUN apk add --no-cache cargo rust musl-dev
-RUN cargo install sqlx-cli --no-default-features --features postgres
+RUN cargo install sqlx-cli --version 0.8.6 --no-default-features --features postgres
 
 FROM alpine:3.23
 
