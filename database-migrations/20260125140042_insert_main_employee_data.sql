@@ -1,0 +1,3 @@
+-- Migration: Insert employee data
+INSERT INTO public."employees" (pk_employee_id, firstname, lastname, gender, personal_email, login_password_hash, phone_number, professional_email, professional_email_password, created_at, last_login_at, deactivated_at) VALUES
+('f18ce7a3-123c-4690-a782-00c3550aa9e0', 'Baptiste', 'Bronsin', 'M', 'baptiste.bronsin@outlook.com', '$argon2id$v=19$m=19456,t=2,p=1$GvJ0zPtHLrLN0ubKYXtqdw$dAqS9mMzUO55YVmiWPESW60AagJ5px+803z3nuEmH48', NULL, 'baptiste.bronsin@plannify.be', 'Passw0rd!', NOW(), NOW(), NULL);
