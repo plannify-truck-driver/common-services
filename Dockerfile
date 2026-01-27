@@ -10,7 +10,12 @@ COPY --from=builder /root/.cargo/bin/sqlx /usr/local/bin/sqlx
 
 RUN apk add --no-cache postgresql-client libpq libgcc
 
-COPY entrypoint.sh /entrypoint.sh
+RUN addgroup -g 1000 appgroup && adduser -D -u 1000 -G appgroup appuser
 
+COPY --chown=appuser:appgroup entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+RUN chown -R appuser:appgroup /database-migrations
+
+USER appuser
+
 ENTRYPOINT ["/entrypoint.sh"]
