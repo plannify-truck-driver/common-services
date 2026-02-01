@@ -59,14 +59,13 @@ services:
       - plannify_network
 
   pdf-service:
-    image: ghcr.io/plannify-truck-driver/pdf-service:0.1.4
+    image: ghcr.io/plannify-truck-driver/pdf-service:latest
     container_name: plannify_pdf_service
     ports:
       - "4000:4000"
     environment:
       HOST: "0.0.0.0"
       PORT: 4000
-      WEBSITE_URL: "http://localhost:3000"
     networks:
       - plannify_network
     restart: unless-stopped
