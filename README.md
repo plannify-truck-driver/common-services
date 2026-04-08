@@ -34,8 +34,6 @@ docker run -e DATABASE_URL=postgresql://plannify_user:plannify_password@localhos
 
 ### Garage
 
-#### Configuration
+When the docker compose starts, the garage service will initialize by the `garage-init.sh` script. This script will create a bucket and a key in the S3-compatible storage service for storing documents data.
 
-```bash
-./configurations/setup-garage.sh
-```
+The web interface of the garage service is available at `http://localhost:3909` and the credentials for the S3-compatible storage service are available in the `garage.env` file at the root of the project.

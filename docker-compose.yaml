@@ -29,7 +29,8 @@ services:
     restart: unless-stopped
 
   garage:
-    image: docker.io/dxflrs/garage:v2.1.0
+    image: docker.io/dxflrs/garage:v2.2.0
+    container_name: "garage"
     ports:
       - 3900:3900
       - 3901:3901
@@ -42,6 +43,25 @@ services:
       - plannify_network
     restart: unless-stopped
     tty: true
+    healthcheck:
+      test: ["CMD", "/garage", "-c", "/etc/garage.toml", "status"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+
+  garage-init:
+    image: docker:cli
+    container_name: garage_init
+    depends_on:
+      garage:
+        condition: service_healthy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts/garage-init.sh:/garage-init.sh:ro
+      - .:/workspace
+    command: sh /garage-init.sh
+    restart: on-failure
 
   garage-ui:
     image: khairul169/garage-webui:latest
@@ -54,7 +74,7 @@ services:
     environment:
       API_BASE_URL: "http://garage:3903"
       S3_ENDPOINT_URL: "http://garage:3900"
-      API_ADMIN_KEY: "NFjLm3PUZ5FqsWxjEObEBD2CR8xKpEkErGza0/+8xxg="
+      API_ADMIN_KEY: "QEP5Uwqit/qVoRqBV2pVoK86iW98koYuu1WumqzBFmA="
     networks:
       - plannify_network
 
