@@ -32,9 +32,20 @@ echo "[garage-init] Creating bucket '${BUCKET}'..."
 docker exec garage /garage -c /etc/garage.toml bucket create "${BUCKET}" > /dev/null 2>&1 || true
 
 # ── 4. Access key ─────────────────────────────────────────────────────────────
-if [ -f "${ENV_FILE}" ] && grep -q "S3_ACCESS_KEY_ID=GK" "${ENV_FILE}" 2>/dev/null; then
-  echo "[garage-init] Credentials already present in garage.env, skipping key creation."
-  KEY_ID=$(grep "S3_ACCESS_KEY_ID" "${ENV_FILE}" | cut -d'=' -f2)
+if [ -f "${ENV_FILE}" ] \
+  && grep -q "^S3_ACCESS_KEY_ID=" "${ENV_FILE}" 2>/dev/null \
+  && grep -q "^S3_SECRET_ACCESS_KEY=" "${ENV_FILE}" 2>/dev/null; then
+  echo "[garage-init] Credentials found in garage.env, ensuring they exist in Garage..."
+  KEY_ID=$(grep "^S3_ACCESS_KEY_ID=" "${ENV_FILE}" | head -1 | cut -d'=' -f2)
+  SECRET=$(grep "^S3_SECRET_ACCESS_KEY=" "${ENV_FILE}" | head -1 | cut -d'=' -f2)
+
+  if docker exec garage /garage -c /etc/garage.toml key info "${KEY_ID}" > /dev/null 2>&1; then
+    echo "[garage-init] Key ${KEY_ID} already exists in Garage."
+  else
+    echo "[garage-init] Key ${KEY_ID} missing in Garage, importing it..."
+    docker exec garage /garage -c /etc/garage.toml key import "${KEY_ID}" "${SECRET}" > /dev/null 2>&1
+    echo "[garage-init] Key imported in Garage."
+  fi
 else
   echo "[garage-init] Creating access key '${KEY_NAME}'..."
   KEY_INFO=$(docker exec garage /garage -c /etc/garage.toml key create "${KEY_NAME}" 2>&1)
