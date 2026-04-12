@@ -32,32 +32,35 @@ echo "[garage-init] Creating bucket '${BUCKET}'..."
 docker exec garage /garage -c /etc/garage.toml bucket create "${BUCKET}" > /dev/null 2>&1 || true
 
 # ── 4. Access key ─────────────────────────────────────────────────────────────
+KEY_ID=""
+SECRET=""
+
 if [ -f "${ENV_FILE}" ] \
-  && grep -q "^S3_ACCESS_KEY_ID=" "${ENV_FILE}" 2>/dev/null \
-  && grep -q "^S3_SECRET_ACCESS_KEY=" "${ENV_FILE}" 2>/dev/null; then
-  echo "[garage-init] Credentials found in garage.env, ensuring they exist in Garage..."
-  KEY_ID=$(grep "^S3_ACCESS_KEY_ID=" "${ENV_FILE}" | head -1 | cut -d'=' -f2)
-  SECRET=$(grep "^S3_SECRET_ACCESS_KEY=" "${ENV_FILE}" | head -1 | cut -d'=' -f2)
+  && grep -q "^S3_ACCESS_KEY=" "${ENV_FILE}" 2>/dev/null \
+  && grep -q "^S3_SECRET_KEY=" "${ENV_FILE}" 2>/dev/null; then
+  KEY_ID=$(grep "^S3_ACCESS_KEY=" "${ENV_FILE}" | head -1 | cut -d'=' -f2)
+  SECRET=$(grep "^S3_SECRET_KEY=" "${ENV_FILE}" | head -1 | cut -d'=' -f2)
 
   if docker exec garage /garage -c /etc/garage.toml key info "${KEY_ID}" > /dev/null 2>&1; then
     echo "[garage-init] Key ${KEY_ID} already exists in Garage."
   else
-    echo "[garage-init] Key ${KEY_ID} missing in Garage, importing it..."
-    docker exec garage /garage -c /etc/garage.toml key import "${KEY_ID}" "${SECRET}" > /dev/null 2>&1
-    echo "[garage-init] Key imported in Garage."
+    echo "[garage-init] Key ${KEY_ID} missing in Garage, creating a new one..."
+    KEY_ID=""
   fi
-else
+fi
+
+if [ -z "${KEY_ID}" ]; then
   echo "[garage-init] Creating access key '${KEY_NAME}'..."
   KEY_INFO=$(docker exec garage /garage -c /etc/garage.toml key create "${KEY_NAME}" 2>&1)
-  KEY_ID=$(echo "$KEY_INFO"   | grep "Key ID:"     | awk '{print $NF}')
-  SECRET=$(echo "$KEY_INFO"   | grep "Secret key:" | awk '{print $NF}')
+  KEY_ID=$(echo "$KEY_INFO" | grep "Key ID:"     | awk '{print $NF}')
+  SECRET=$(echo "$KEY_INFO" | grep "Secret key:" | awk '{print $NF}')
 
   cat > "${ENV_FILE}" <<EOF
 S3_ENDPOINT=http://localhost:3900
 S3_REGION=garage
-S3_BUCKET=${BUCKET}
-S3_ACCESS_KEY_ID=${KEY_ID}
-S3_SECRET_ACCESS_KEY=${SECRET}
+S3_BUCKET_NAME=${BUCKET}
+S3_ACCESS_KEY=${KEY_ID}
+S3_SECRET_KEY=${SECRET}
 EOF
   echo "[garage-init] Credentials saved to garage.env"
 fi
