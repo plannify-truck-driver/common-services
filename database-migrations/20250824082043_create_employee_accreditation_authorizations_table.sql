@@ -1,6 +1,6 @@
 -- Migration: Create employee accreditation authorizations table
 CREATE TABLE IF NOT EXISTS public."employee_accreditation_authorizations" (
-    pk_employee_accreditation_authorization_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pk_employee_accreditation_authorization_id UUID PRIMARY KEY DEFAULT uuidv7(),
     fk_recipient_employee_id UUID NOT NULL,
     fk_employee_level_id INTEGER NOT NULL,
     fk_authorizing_employee_id UUID,

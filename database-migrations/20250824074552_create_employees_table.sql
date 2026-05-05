@@ -1,6 +1,6 @@
 -- Migration: Create employees table
 CREATE TABLE IF NOT EXISTS public."employees" (
-    pk_employee_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pk_employee_id UUID PRIMARY KEY DEFAULT uuidv7(),
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
     gender VARCHAR(1),

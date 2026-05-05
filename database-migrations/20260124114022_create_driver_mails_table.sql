@@ -1,6 +1,6 @@
 -- Migration: Create driver mails table
 CREATE TABLE IF NOT EXISTS public."driver_mails" (
-    pk_driver_mail_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pk_driver_mail_id UUID PRIMARY KEY DEFAULT uuidv7(),
     fk_driver_id UUID NOT NULL,
     fk_employee_id UUID,
     fk_mail_type_id INTEGER NOT NULL,
