@@ -79,7 +79,7 @@ services:
       - plannify_network
 
   pdf-service:
-    image: ghcr.io/plannify-truck-driver/pdf-service:latest
+    image: ghcr.io/plannify-truck-driver/pdf-service:0.1.6
     container_name: plannify_pdf_service
     ports:
       - "4000:4000"
