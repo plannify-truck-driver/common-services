@@ -9,12 +9,11 @@ CREATE TABLE IF NOT EXISTS public."drivers" (
     phone_number VARCHAR(20),
     is_searchable BOOLEAN DEFAULT true NOT NULL,
     allow_request_professional_agreement BOOLEAN DEFAULT false NOT NULL,
-    language VARCHAR(10) DEFAULT 'fr' NOT NULL,
+    language VARCHAR(10) DEFAULT 'en' NOT NULL,
     rest_json JSONB,
     mail_preferences INTEGER DEFAULT 0 NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     verified_at TIMESTAMP WITH TIME ZONE,
     last_login_at TIMESTAMP WITH TIME ZONE,
-    deactivated_at TIMESTAMP WITH TIME ZONE,
-    refresh_token_hash TEXT
+    deactivated_at TIMESTAMP WITH TIME ZONE
 );
