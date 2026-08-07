@@ -18,5 +18,5 @@ jobs:
       use_sast: false
       images: |
         [
-          {"image": plannify-truck-driver/${{ github.repository }}}
+          {"image": "plannify-truck-driver/common-services"}
         ]
