@@ -100,10 +100,46 @@ services:
     networks:
       - plannify_network
 
+  spicedb:
+    image: "authzed/spicedb:v1.56.0"
+    command: "serve"
+    restart: "always"
+    ports:
+      - "9095:9090"
+      - "50051:50051"
+    environment:
+      - "SPICEDB_GRPC_PRESHARED_KEY=foobar"
+      - "SPICEDB_DATASTORE_ENGINE=postgres"
+      - "SPICEDB_DATASTORE_CONN_URI=postgres://postgres:secret@database:5432/spicedb?sslmode=disable"
+    depends_on:
+      - "migrate"
+
+  migrate:
+    image: "authzed/spicedb:v1.56.0"
+    command: "migrate head"
+    restart: "on-failure"
+    environment:
+      - "SPICEDB_DATASTORE_ENGINE=postgres"
+      - "SPICEDB_DATASTORE_CONN_URI=postgres://postgres:secret@database:5432/spicedb?sslmode=disable"
+    depends_on:
+      - "database"
+
+  database:
+    image: "postgres:16"
+    ports:
+      - "5433:5432"
+    environment:
+      - "POSTGRES_PASSWORD=secret"
+      - "POSTGRES_DB=spicedb"
+    volumes:
+      - "spicedb_data:/var/lib/postgresql/data"
+
 volumes:
   postgres_data:
     driver: local
   garage_data:
+    driver: local
+  spicedb_data:
     driver: local
 
 networks:
