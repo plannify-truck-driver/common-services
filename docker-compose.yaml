@@ -110,21 +110,21 @@ services:
     environment:
       - "SPICEDB_GRPC_PRESHARED_KEY=foobar"
       - "SPICEDB_DATASTORE_ENGINE=postgres"
-      - "SPICEDB_DATASTORE_CONN_URI=postgres://postgres:secret@database:5432/spicedb?sslmode=disable"
+      - "SPICEDB_DATASTORE_CONN_URI=postgres://postgres:secret@spicedb-database:5432/spicedb?sslmode=disable"
     depends_on:
-      - "migrate"
+      - "spicedb-migrate"
 
-  migrate:
+  spicedb-migrate:
     image: "authzed/spicedb:v1.56.0"
     command: "migrate head"
     restart: "on-failure"
     environment:
       - "SPICEDB_DATASTORE_ENGINE=postgres"
-      - "SPICEDB_DATASTORE_CONN_URI=postgres://postgres:secret@database:5432/spicedb?sslmode=disable"
+      - "SPICEDB_DATASTORE_CONN_URI=postgres://postgres:secret@spicedb-database:5432/spicedb?sslmode=disable"
     depends_on:
-      - "database"
+      - "spicedb-database"
 
-  database:
+  spicedb-database:
     image: "postgres:16"
     ports:
       - "5433:5432"

@@ -1,0 +1,130 @@
+/**
+ * SpiceDB authorization schema for the Plannify admin API.
+ *
+ * Model: flat/global RBAC.
+ *   - `role` mirrors what used to be `employee_levels` rows (e.g. "dispatcher",
+ *     "hr_manager", "super_admin"). Role -> permission bindings are static
+ *     (equivalent to the old `link_employee_authorization` table).
+ *   - `employee#assignee-of-role` relationships are time-bound, equivalent to
+ *     `employee_accreditation_authorizations` (start_at/end_at).
+ *   - Each resource type below can also grant a permission directly to a
+ *     specific `employee`, bypassing roles entirely. This is the equivalent of
+ *     `employee_authorization_derogations` and is always time-bound too.
+ *   - There is no per-instance scoping: every resource type is checked against
+ *     a single conventional object id, e.g. `driver:global`, `workday:global`.
+ *     The API always performs checks against that fixed id.
+ */
+
+/** A caveat guarding any time-bound grant (role assignment or derogation). */
+caveat within_validity_period(current_time timestamp, start_at timestamp, end_at timestamp) {
+  current_time >= start_at && current_time <= end_at
+}
+
+/**
+ * The acting subject of every API call. Also doubles as a manageable
+ * resource, since admins can CRUD other employee accounts.
+ */
+definition employee {
+    relation creator: role#assignee | employee with within_validity_period
+    relation reader: role#assignee | employee with within_validity_period
+    relation updater: role#assignee | employee with within_validity_period
+    relation deleter: role#assignee | employee with within_validity_period
+
+    permission create = creator
+    permission read = reader
+    permission update = updater
+    permission delete = deleter
+}
+
+/**
+ * A named role/level (e.g. dispatcher, hr_manager, super_admin).
+ * `assignee` tuples are time-bound: write them with a
+ * `within_validity_period` caveat context of {start_at, end_at}.
+ */
+definition role {
+    relation assignee: employee with within_validity_period
+}
+
+definition driver {
+    relation creator: role#assignee | employee with within_validity_period
+    relation reader: role#assignee | employee with within_validity_period
+    relation updater: role#assignee | employee with within_validity_period
+    relation deleter: role#assignee | employee with within_validity_period
+
+    permission create = creator
+    permission read = reader
+    permission update = updater
+    permission delete = deleter
+}
+
+definition workday {
+    relation creator: role#assignee | employee with within_validity_period
+    relation reader: role#assignee | employee with within_validity_period
+    relation updater: role#assignee | employee with within_validity_period
+    relation deleter: role#assignee | employee with within_validity_period
+
+    permission create = creator
+    permission read = reader
+    permission update = updater
+    permission delete = deleter
+}
+
+definition workday_document {
+    relation creator: role#assignee | employee with within_validity_period
+    relation reader: role#assignee | employee with within_validity_period
+    relation updater: role#assignee | employee with within_validity_period
+    relation deleter: role#assignee | employee with within_validity_period
+
+    permission create = creator
+    permission read = reader
+    permission update = updater
+    permission delete = deleter
+}
+
+definition driver_suspension {
+    relation creator: role#assignee | employee with within_validity_period
+    relation reader: role#assignee | employee with within_validity_period
+    relation updater: role#assignee | employee with within_validity_period
+    relation deleter: role#assignee | employee with within_validity_period
+
+    permission create = creator
+    permission read = reader
+    permission update = updater
+    permission delete = deleter
+}
+
+definition driver_mail {
+    relation creator: role#assignee | employee with within_validity_period
+    relation reader: role#assignee | employee with within_validity_period
+    relation updater: role#assignee | employee with within_validity_period
+    relation deleter: role#assignee | employee with within_validity_period
+
+    permission create = creator
+    permission read = reader
+    permission update = updater
+    permission delete = deleter
+}
+
+definition driver_mail_attachment {
+    relation creator: role#assignee | employee with within_validity_period
+    relation reader: role#assignee | employee with within_validity_period
+    relation updater: role#assignee | employee with within_validity_period
+    relation deleter: role#assignee | employee with within_validity_period
+
+    permission create = creator
+    permission read = reader
+    permission update = updater
+    permission delete = deleter
+}
+
+definition driver_information {
+    relation creator: role#assignee | employee with within_validity_period
+    relation reader: role#assignee | employee with within_validity_period
+    relation updater: role#assignee | employee with within_validity_period
+    relation deleter: role#assignee | employee with within_validity_period
+
+    permission create = creator
+    permission read = reader
+    permission update = updater
+    permission delete = deleter
+}
